@@ -1,10 +1,22 @@
 import os
+import shelve
+import tempfile
 
 class SqueezePath(object):
 
     def __init__(self):
-        self.uniques = {}
         self.invert = None
+        self.squeezefile = tempfile.mktemp(prefix="squeeze") 
+        self.uniques = shelve.open(self.squeezefile)
+
+    def cleanup(self):
+        self.uniques.close()
+        os.unlink(self.squeezefile)
+
+    def __enter__(self):
+        return self
+    def __exit__(self, type, value, traceback):
+        self.cleanup()
 
     def encode(self, target):
         dirpart,filepart = os.path.split(target)

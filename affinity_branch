@@ -1,0 +1,32 @@
+#!/bin/bash -e
+# Calculate the edge weights for a given mercurial branch
+
+usage() {
+    echo "$0 branch [repository root]"
+}
+
+# Must specify branch
+BRANCH=${1}
+if [ -z "${BRANCH}" ]; then
+    echo "no branch name specified"
+    usage
+    exit 1
+fi
+
+# Name the output after the branch
+OUTFILE="${BRANCH}.edges.out"
+
+# Check the root
+ROOT=${2:-.} 
+if [ ! -d ${ROOT}/.hg ] ; then
+    echo "mercurial repo not rooted at ${ROOT}"
+    usage
+    exit 1
+fi
+
+
+
+hg log --style=multiline.style -R ${ROOT} -b "${BRANCH}" | 
+    python affinities.py |
+    tee "${OUTFILE}" 
+
