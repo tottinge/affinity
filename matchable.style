@@ -1,0 +1,2 @@
+changeset = "{author}\n{date|shortdate}\n{branches}\n{desc}\n-^-^*\n{files}\n"
+file = "  {file}\n"

@@ -1,6 +1,7 @@
 import unittest
 from affinities import *
-SEPARATOR = "-^-^*"
+from hg_log_parser import divider as SEPARATOR
+#SEPARATOR = "-^-^*"
 
 class TestCounter(unittest.TestCase):
     def test_null_input(self):

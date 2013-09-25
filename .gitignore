@@ -1,3 +1,9 @@
 *.log
 *.out
 *.pyc
+*.log
+*.csv
+*.db
+*.swp
+*.swo
+*.db-journal
