@@ -11,7 +11,10 @@ import fileinput
 import csv
 from hg_log_parser import divider, not_blank, not_separator, tickets_from_description
 
-ChangeSet = namedtuple("changeset", "author date branch tickets files")
+ChangeSet = namedtuple(
+    "changeset", 
+    "author date branch description tickets files"
+)
 
 def gather_changes(stream):
     while True:
@@ -24,7 +27,13 @@ def parse_changeset(stream):
     descr = " ".join(x.strip() for x in takewhile(not_separator, stream))
     tickets = set(list(tickets_from_description(descr)) + list(tickets_from_description(branch)))
     files = ",".join(x.strip() for x in takewhile(not_blank, stream))
-    return ChangeSet(author, date, branch, tickets, files)
+    return ChangeSet(author, date, branch, descr, tickets, files)
+
+def is_merge_or_backout(description):
+    return any(map(
+                lambda x: x in description, 
+                ['back out', 'backed out', 'backout', 'merge']
+            ))
 
 def main():
     repo = sys.argv.pop(1)
@@ -34,6 +43,9 @@ def main():
             continue
         if len(changeset.files) > 206:
             continue
+        if is_merge_or_backout(changeset.description):
+            continue
+
         writeme.writerow([
             ordinal,
             repo,
