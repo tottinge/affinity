@@ -41,8 +41,6 @@ def main():
     for (ordinal,changeset) in enumerate(gather_changes(fileinput.input())):
         if not changeset.branch:
             continue
-        if len(changeset.files) > 206:
-            continue
         if is_merge_or_backout(changeset.description):
             continue
 

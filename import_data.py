@@ -77,6 +77,9 @@ def record_import(inputstream, database):
         # populate changeset
         cursor = database.cursor()
         ordinal, source, user, date, branch, tickets, files = row
+        split_files = files.split(',')
+        if len(split_files) > 206:
+            continue
         if 'auryn' in branch.lower():
             continue
 
@@ -98,14 +101,15 @@ def record_import(inputstream, database):
             )
         
         # Populate information about the files
-        for filepath in files.split(','):
+        for filepath in split_files:
             filepath = filepath.strip()
             if not filepath:
                 continue
 
             # File and directory
             directory, filename = os.path.split(filepath)
-            if not filename.endswith('.h') and not filename.endswith('.cpp'):
+            important_endings = ['.h','.cpp','.txt','.xml','.ui']
+            if not any(map(filename.endswith, important_endings)):
                 continue
 
             directory_id = path_key_for(directory, database)

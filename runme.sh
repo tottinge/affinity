@@ -1,15 +1,17 @@
 #!/bin/bash -v
+DAYS=90
+FILESUFFIX=${DAYS}days.csv
 
 for repo in jdcorefs GSD vtcorefs
 do
-        hg log -R ~/${repo}/ -r "date(-90) and ! merge()" --style=matchable.style  | python hg2csv.py ${repo} > ${repo}.90days.csv &
+    hg log -R ~/${repo}/ -r "date(-${DAYS}) and ! merge()" --style=matchable.style  | 
+        python hg2csv.py ${repo} > ${repo}.${FILESUFFIX} &
 done
 
 wait
 
-python import_data.py *.90days.csv 2>toobig.log &
-
-python howmanyfiles.py *.csv  &
+python import_data.py *.${FILESUFFIX} 2>toobig.log &
+python howmanyfiles.py *.${FILESUFFIX}  &
 
 wait 
 
