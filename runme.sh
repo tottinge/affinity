@@ -1,5 +1,8 @@
-#!/bin/bash -v
-DAYS=90
+#!/bin/bash -x
+
+
+DAYS=${1:-30}
+
 FILESUFFIX=${DAYS}days.csv
 
 for repo in jdcorefs GSD vtcorefs
@@ -16,6 +19,8 @@ python howmanyfiles.py *.${FILESUFFIX}  &
 wait 
 
 ./get_edges.sh
-python analyze_graph.py > groups.log
+
+python display_nodes.py > groups_by_file.log
+python display_edges.py > groups_by_linkage.log
 
 # need to run bayes here as well...
