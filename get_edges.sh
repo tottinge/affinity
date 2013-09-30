@@ -1,6 +1,9 @@
 #!/bin/bash
 # takes about 6 minutes and generates 18,992,772 lines
-time sqlite3 events.sqlite.db > edges.out <<EOF
+
+DB_NAME=${EVENTS_DB_NAME:-events.sqlite.db}
+
+time sqlite3 $DB_NAME > edges.out <<EOF
             select count(1) as weight
                     , l.file
                     , r.file
@@ -18,7 +21,7 @@ time sqlite3 events.sqlite.db > edges.out <<EOF
 ;
 EOF
 
-#time sqlite3 events.sqlite.db > tickets.out <<EOF
+#time sqlite3 $DB_NAME > tickets.out <<EOF
 #        select t.handle as ticket, count(1) as num_files
 #        from file_to_ticket as ft, ticket as t
 #        where ft.ticket = t.id

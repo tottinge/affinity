@@ -1,8 +1,10 @@
 import os
 import sys
-import csv
+import re
 import itertools
 from datetime import datetime
+from collections import defaultdict
+import csv
 import sqlite3
 import networkx as nx
 
@@ -10,7 +12,8 @@ SQUELCH=10
 MIN_GROUP_SIZE=5
 DETAIL=False
 
-DB_FILE="events.sqlite.db"
+DB_FILE=os.environ.get("EVENTS_DB_NAME", "events.sqlite.db")
+print "DB:%s" % DB_FILE
 if not os.path.exists(DB_FILE):
     print "DB file not found"
     exit(1)
@@ -19,10 +22,10 @@ database = sqlite3.connect(DB_FILE)
 CSVFILE='edges.out'
 if len(sys.argv) > 1:
     SQUELCH = int(sys.argv.pop(1))
-print "Minimum weight considered =", SQUELCH
+print "Squelch:", SQUELCH
 if len(sys.argv) >1:
     MIN_GROUP_SIZE=int(sys.argv.pop(1))
-print "minimum group size =", MIN_GROUP_SIZE
+print "Min Size:", MIN_GROUP_SIZE
 if len(sys.argv) >1:
     DETAIL=sys.argv.pop(1)
 
@@ -52,7 +55,7 @@ def name_for(file_id):
     )
     results = cursor.fetchone()
     if results is None:
-        return "unknown [%d]" % file_id
+        return "unknown [%s]" % file_id
     name_for.names[file_id] = results[0]
     return results[0]
 name_for.names = {}
@@ -71,11 +74,23 @@ def build_graph(squelch=SQUELCH):
     return graph
 
 
+def name_group(nodes):
+    nameparts = defaultdict(lambda: 0)
+    for node in nodes:
+        for part in re.split('\W+', node[node.find(':')+1 : node.rfind('.')]):
+            nameparts[part] += 1
+    counted_names =((count,name) for (name,count) in nameparts.iteritems())
+    ordered = sorted(counted_names, reverse=True)
+    top = ".".join(name for (count,name) in ordered[:3])
+    return top
+
+def name_subgraph(subgraph):
+    return name_group(name_for(x) for x in subgraph.nodes())
+
 def build_affinity_groups(graph):
     subgraphs = list(
         x for x in nx.connected_component_subgraphs(graph) 
         if x.number_of_nodes()>=MIN_GROUP_SIZE
     )
-    print "# Subgraph: ", len(subgraphs)
     return subgraphs
 
