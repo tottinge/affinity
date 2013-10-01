@@ -13,6 +13,10 @@ if [ -d ${OUT_DIR} ] ; then
 fi
 mkdir -p ${OUT_DIR}
 
+
+SQUELCH=${2:-6}
+MIN_GROUP=${3:-4}
+
 export EVENTS_DB_NAME=${OUT_DIR}/events.sqlite.db
 FILESUFFIX=${DAYS}days.csv
 
@@ -35,12 +39,9 @@ echo "Correlating edges"
 
 
 echo "Conducting analysis"
-python display_nodes.py > ${OUT_DIR}/groups_by_file.${DAYS}.log
-python display_edges.py > ${OUT_DIR}/groups_by_linkage.${DAYS}.log
-python display_spanning_edges.py > ${OUT_DIR}/spanning_edges.${DAYS}.log
-python display_path_correlation.py > ${OUT_DIR}/path_correlation.${DAYS}.log
+python display_nodes.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_file.${DAYS}.txt
+python display_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_linkage.${DAYS}.txt
+python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
+python display_path_correlation.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/path_correlation.${DAYS}.txt
+python display_connectors.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/path_correlation.${DAYS}.txt
 
-
-echo ""
-echo Database is ${EVENTS_DB_NAME}
-# need to run bayes here as well...
