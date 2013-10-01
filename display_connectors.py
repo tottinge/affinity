@@ -15,10 +15,13 @@ def find_bridge_edges(raw, squelched):
         right_node = right.nodes()[0]
         right_name = name_subgraph(right)
 
-        bridge = set(nx.shortest_path(raw, left_node, right_node))
-        chain = bridge .difference(left.nodes()) .difference(right.nodes())
-        if chain:
-            yield left_name, right_name, list(name_for(int(x)) for x in chain)
+        try:
+            bridge = set(nx.shortest_path(raw, left_node, right_node))
+            chain = bridge .difference(left.nodes()) .difference(right.nodes())
+            if chain:
+                yield left_name, right_name, list(name_for(int(x)) for x in chain)
+        except nx.exception.NetworkXNoPath as ex:
+            pass
 
 if __name__ == '__main__':
     if SQUELCH == 0:
@@ -29,6 +32,7 @@ if __name__ == '__main__':
     raw = build_graph(0)
     for (left,right,chain) in sorted(find_bridge_edges(raw, squelched)):
         print left, "---->", right
-        print "\n   +--> ".join(chain)
-        print 
+        for item in chain:
+            print "   ",item
+        print
 

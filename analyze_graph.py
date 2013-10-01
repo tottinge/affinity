@@ -12,14 +12,17 @@ SQUELCH=10
 MIN_GROUP_SIZE=5
 DETAIL=False
 
-DB_FILE=os.environ.get("EVENTS_DB_NAME", "events.sqlite.db")
+OUT_DIR=os.environ.get("OUT_DIR", ".")
+default_db = os.path.join(OUT_DIR, "events.sqlite.db")
+DB_FILE=os.environ.get("EVENTS_DB_NAME", default_db)
+
 print "DB:%s" % DB_FILE
 if not os.path.exists(DB_FILE):
     print "DB file not found"
     exit(1)
 database = sqlite3.connect(DB_FILE)
 
-CSVFILE='edges.out'
+CSVFILE=os.path.join(OUT_DIR, 'edges.out')
 if len(sys.argv) > 1:
     SQUELCH = int(sys.argv.pop(1))
 print "Squelch:", SQUELCH
