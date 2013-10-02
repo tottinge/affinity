@@ -30,7 +30,7 @@ def display_result_nodes(subgraphs):
                     print "\t\t", weight, neighbor
 
         if violations:
-            print "GROUP %d HAS %d CROSSOVER VIOLATIONS" % (name, len(violations))
+            print "GROUP %s HAS %d CROSSOVER VIOLATIONS" % (name, len(violations))
             for filename in violations:
                 print " ",filename
 
