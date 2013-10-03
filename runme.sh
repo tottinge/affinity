@@ -43,5 +43,5 @@ python display_nodes.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_file.${DA
 python display_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_linkage.${DAYS}.txt
 python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
 python display_path_correlation.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/path_correlation.${DAYS}.txt
-python display_connectors.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/path_correlation.${DAYS}.txt
+python display_connectors.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/connectors.${DAYS}.txt
 
