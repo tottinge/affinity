@@ -1,0 +1,6 @@
+networkx==1.8.1
+numpy==1.7.1
+transaction==1.4.1
+wsgiref==0.1.2
+wx==1.0.0
+zope.interface==4.0.5

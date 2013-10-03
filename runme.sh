@@ -6,19 +6,19 @@
 # Filenames contain the number of days used in the file.
 
 DAYS=${1:-30}
+SQUELCH=${2:-6}
+MIN_GROUP=${3:-4}
+echo "Days:${DAYS}, Squelch:${SQUELCH}, Min group:${MIN_GROUP}"
+FILESUFFIX=${DAYS}days.csv
+
+
 export OUT_DIR=EVENTS.${DAYS}.$(date +%F)
+
 if [ -d ${OUT_DIR} ] ; then
     echo "${OUT_DIR} exists. Drop it and try again"
     exit 1
 fi
 mkdir -p ${OUT_DIR}
-
-
-SQUELCH=${2:-6}
-MIN_GROUP=${3:-4}
-
-export EVENTS_DB_NAME=${OUT_DIR}/events.sqlite.db
-FILESUFFIX=${DAYS}days.csv
 
 
 echo "Gathering mercurial records"
@@ -29,7 +29,7 @@ do
 done
 wait
 
-echo "creating database (${EVENTS_DB_NAME})"
+echo "creating database to help correlate edges & compress filenames"
 python import_data.py ${OUT_DIR}/*.${FILESUFFIX} 2>toobig.log &
 python howmanyfiles.py ${OUT_DIR}/*.${FILESUFFIX}  &
 wait 

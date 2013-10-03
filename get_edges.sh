@@ -2,9 +2,9 @@
 # takes about 6 minutes and generates 18,992,772 lines
 
 OUT_DIR=${OUT_DIR:-.}
-DB_NAME=${EVENTS_DB_NAME:-${OUT_DIR}/events.sqlite.db}
+DB_NAME=${OUT_DIR}/events.sqlite.db
 
-time sqlite3 $DB_NAME > ${OUT_DIR}/edges.out <<EOF
+sqlite3 $DB_NAME > ${OUT_DIR}/edges.out <<EOF
             select count(1) as weight
                     , l.file
                     , r.file

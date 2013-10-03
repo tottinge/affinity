@@ -108,7 +108,7 @@ def record_import(inputstream, database):
 
             # File and directory
             directory, filename = os.path.split(filepath)
-            important_endings = ['.h','.cpp','.txt','.xml','.ui']
+            important_endings = ['.h','.cpp','.txt','.xml','.ui', '.env']
             if not any(map(filename.endswith, important_endings)):
                 continue
 
@@ -240,13 +240,13 @@ def associate_files_to_tickets(file_id, ticket_ids, database):
     for ticket_id in ticket_ids:
         insert_file_to_ticket(file_id, ticket_id, database)
 
-def get_database_name(default):
-    db_name= os.environ.get("EVENTS_DB_NAME", default)
-    print "EVENTS DB=", db_name
+def get_database_name():
+    dir_name= os.environ.get("OUT_DIR", '.')
+    db_name = os.path.join(dir_name, "events.sqlite.db")
     return db_name
 
 if __name__ == "__main__":
-    db_name = get_database_name("events.sqlite.db")
+    db_name = get_database_name()
     database = create_fresh_database(db_name)
     record_import(fileinput.input(), database)
     database.close()
