@@ -1,20 +1,15 @@
-Delete:
-    (check for nonsense filter): affinities.py
+Main part of analysis program
+   ./runme.sh -- main script to make stuff happen
+   ./repositories.config -- a list of HG repos to search
+   ./matchable.style - format specification for hg logs
+   ./hg_log_parser.py - Parse mercurial logs (created with matchable style)
+   ./display*py - various analyses of the data
+   ./helpers.py - some utilities
 
-Add data gen: 
-    bayes.py
-    queries.sql
+Analyses:
+    display_edges.py - Show edges in affinity groups
+    display_nodes.py - Show nodes in affinity groups
+    display_spanning_edges.py - show FS-spanning relationships
+    display_path_correlation.py - show edges along with path commonality
 
-DESCRIBE:
-display_edges.py - Show edges in affinity groups
-display_nodes.py - Show nodes in affinity groups
-display_spanning_edges.py - show FS-spanning relationships
-display_path_correlation.py - show edges along with path commonality
-events.sqlite.db - The SQLITE3 database for our repos
-runme.sh - The script that does the analysis
-get_edges.sh - Creates the edges for build_groups.py
-hg_log_parser.py - Parse mercurial logs
-howmanyfiles.py - analysis of files per commit
-hg2csv.py  - generates csv from hg log
-matchable.style - format for hg log
-analyze_graph.py - library for analysis of neighborhoods, etc
+

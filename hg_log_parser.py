@@ -1,32 +1,54 @@
-from collections import namedtuple, defaultdict
+#! python
+# Parse records from HG logfiles (created using matchable.style)
+# into records with descriptions, tickets, and files
+# for use for further analysis
+
+from collections import namedtuple
 from itertools import takewhile
 import re
 
-RecordResult = namedtuple("record", "description tickets files")
-
-def gather_changesets(stream):
-    while True:
-        yield next_changeset(stream)
-
-def next_changeset(stream):
-    description = " ".join(x.strip() for x in takewhile(not_separator, stream))
-    tickets = [ticket.upper() for ticket in tickets_from_description(description)]
-    filenames = [f.strip() for f in takewhile(not_blank, stream)]
-    if (not description) and (not filenames):
-        raise StopIteration()
-    return RecordResult(description, sorted(tickets), sorted(filenames))
-
-def is_blank(line):
-    return line.strip() == ''
-
-def not_blank(line):
-    return not is_blank(line)
-
-divider = '-^-^*'
-def not_separator(line):
-    return line.strip() != divider
-
+ChangeSet = namedtuple(
+    "changeset",
+    "author date branch description tickets files"
+)
 ticket_regex = re.compile('(?<!\w)(?:DE|QC|US)\d\d+', re.IGNORECASE)
+divider = '-^-^*'
+
+
+def gather_changes(stream):
+    while True:
+        yield parse_changeset(stream)
+
+
+def is_merge_or_backout(description):
+    return any(
+        map(
+            lambda x: x in description,
+            ['back out', 'backed out', 'backout', 'merge']
+        )
+    )
+
+
+def not_separator(x):
+    return (x.strip() != divider)
+
+
+def not_blank(x):
+    return bool(x.strip())
+
+
 def tickets_from_description(text):
     return set(ticket_regex.findall(text))
 
+
+def parse_changeset(stream):
+    author = stream.next().decode('utf-8', 'replace').strip()
+    date = stream.next().strip()
+    branch = stream.next().strip()
+    descr = " ".join(x.strip() for x in takewhile(not_separator, stream))
+    tickets = set(
+        list(tickets_from_description(descr))
+        + list(tickets_from_description(branch))
+    )
+    files = ",".join(x.strip() for x in takewhile(not_blank, stream))
+    return ChangeSet(author, date, branch, descr, tickets, files)
