@@ -24,7 +24,6 @@ def combine_graphs(left, right):
 
 
 def graph_from_file(filename):
-    print>>sys.stderr, filename
     try:
         return nx.read_graphml(filename)
     except Exception as fred:
