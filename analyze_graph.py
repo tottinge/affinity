@@ -1,27 +1,39 @@
-import sys
 import re
 from collections import defaultdict
 import networkx as nx
-
-SQUELCH = 10
-MIN_GROUP_SIZE = 5
-DETAIL = False
-
-if len(sys.argv) > 1:
-    SQUELCH = int(sys.argv.pop(1))
-print "Squelch:", SQUELCH
-if len(sys.argv) > 1:
-    MIN_GROUP_SIZE = int(sys.argv.pop(1))
-print "Min Size:", MIN_GROUP_SIZE
-if len(sys.argv) > 1:
-    DETAIL = sys.argv.pop(1)
+import argparse
 
 
-def build_graph(stream = None):
-    if not stream:
-        import fileinput
-        stream = fileinput.input()
-    return nx.read_graphml(stream, encoding='utf-8')
+def parse_command_line(*args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'squelch',
+        type=int,
+        help='eliminate lower-weighted edges'
+    )
+    parser.add_argument(
+        'minsize',
+        type=int,
+        help='ignore smaller groups'
+    )
+    parser.add_argument(
+        'inputfile',
+        type=argparse.FileType('r'),
+        help="graphml file"
+    )
+    parser.add_argument(
+        '-v',
+        '--verbose',
+        action='store_true',
+        default=False,
+        help='show details'
+    )
+    args = parser.parse_args(list(args))
+    return args
+
+
+def build_graph(stream):
+    return nx.read_graphml(stream)
 
 
 def node_weight(subgraph, node):
@@ -52,9 +64,19 @@ def name_subgraph(subgraph):
     return name_group(subgraph.nodes())
 
 
-def build_affinity_groups(graph):
+def squelch(graph, squelch):
+    squelched = graph.copy()
+    squelched.remove_edges_from(
+        edge
+        for edge in graph.edges_iter()
+        if graph.get_edge_data(*edge)['weight'] <= squelch
+    )
+    return squelched
+
+
+def build_affinity_groups(graph, groupsize):
     subgraphs = list(
         x for x in nx.connected_component_subgraphs(graph)
-        if x.number_of_nodes() >= MIN_GROUP_SIZE
+        if x.number_of_nodes() >= groupsize
     )
     return subgraphs

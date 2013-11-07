@@ -31,11 +31,12 @@ done
 wait
 
 echo "Combining the individual graphs"
-python combine_graphs.py ${OUT_DIR}/*.${FILESUFFIX} > ${OUT_DIR}/combined.xml
+COMBINED=${OUT_DIR}/combined.xml
+python combine_graphs.py ${OUT_DIR}/*.${FILESUFFIX} > ${COMBINED}
 
 
 #echo "Conducting analysis"
-#python display_nodes.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_file.${DAYS}.txt
+python display_nodes.py ${SQUELCH} ${MIN_GROUP} < ${COMBINED} > ${OUT_DIR}/groups_by_file.${DAYS}.txt
 #python display_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_linkage.${DAYS}.txt
 #python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
 #python display_path_correlation.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/path_correlation.${DAYS}.txt
