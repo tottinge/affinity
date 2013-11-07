@@ -6,10 +6,8 @@
 # Filenames contain the number of days used in the file.
 
 DAYS=${1:-30}
-SQUELCH=${2:-6}
-MIN_GROUP=${3:-4}
-FILESUFFIX=${DAYS}days.xml
-REPOSITORIES=$(cat repositories.config)
+SQUELCH=${2:-2}
+MIN_GROUP=${3:-3}
 echo "Days:${DAYS}, Squelch:${SQUELCH}, Min group:${MIN_GROUP}"
 
 export OUT_DIR=EVENTS.${DAYS}.$(date +%F)
@@ -21,7 +19,7 @@ mkdir -p ${OUT_DIR}
 
 
 echo "Gathering and converting mercurial records"
-for repo in ${REPOSITORIES}
+for repo in $(cat repositories.config)
 do
     shortname=$(basename ${repo})
     hg log -R ${repo} -r "date(-${DAYS}) and ! merge()" --style=matchable.style  | 
