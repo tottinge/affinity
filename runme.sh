@@ -25,21 +25,21 @@ for repo in ${REPOSITORIES}
 do
     shortname=$(basename ${repo})
     hg log -R ${repo} -r "date(-${DAYS}) and ! merge()" --style=matchable.style  | 
-    python hg2nx.py ${shortname} > ${OUT_DIR}/${shortname}.${FILESUFFIX} || 
+    python hg2nx.py ${shortname} > ${OUT_DIR}/${shortname}.xml || 
         echo "Failed for ${repo}"  & 
 done
 wait
 
 echo "Combining the individual graphs"
 COMBINED=${OUT_DIR}/combined.xml
-python combine_graphs.py ${OUT_DIR}/*.${FILESUFFIX} > ${COMBINED}
+python combine_graphs.py ${OUT_DIR}/*.xml > ${COMBINED}
 
 
 #echo "Conducting analysis"
-python display_nodes.py ${SQUELCH} ${MIN_GROUP} < ${COMBINED} > ${OUT_DIR}/groups_by_file.${DAYS}.txt
-#python display_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/groups_by_linkage.${DAYS}.txt
-#python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
-#python display_path_correlation.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/path_correlation.${DAYS}.txt
-#python display_connectors.py ${SQUELCH} ${MIN_GROUP} > ${OUT_DIR}/connectors.${DAYS}.txt
+python display_nodes.py ${SQUELCH} ${MIN_GROUP}  ${COMBINED} > ${OUT_DIR}/groups_by_file.${DAYS}.txt
+#python display_edges.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/groups_by_linkage.${DAYS}.txt
+#python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
+#python display_path_correlation.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/path_correlation.${DAYS}.txt
+#python display_connectors.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/connectors.${DAYS}.txt
 
 echo "done"
