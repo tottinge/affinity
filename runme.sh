@@ -40,6 +40,6 @@ python display_nodes.py ${SQUELCH} ${MIN_GROUP}  ${COMBINED} > ${OUT_DIR}/groups
 python display_connectors.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/connectors.txt
 python display_path_correlation.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/path_correlation.txt
 python display_edges.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/groups_by_linkage.txt
-#python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
+python display_spanning_edges.py ${SQUELCH} ${MIN_GROUP} ${COMBINED} > ${OUT_DIR}/spanning_edges.${DAYS}.txt
 
 echo "done"
