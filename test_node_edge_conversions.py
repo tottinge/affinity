@@ -1,9 +1,9 @@
 import networkx as nx
-from helpers import reroute_and_delete
+from hg2nx import convert_reasons_to_edges
 import unittest
 
 
-class TestTicketNodes(unittest.TestCase):
+class TestNodeToEdgeConversion(unittest.TestCase):
     def setUp(self):
         g = self.g = nx.Graph()
 
@@ -32,10 +32,15 @@ class TestTicketNodes(unittest.TestCase):
             g.add_edge(story2, node_name)
             g.add_edge(date2, node_name)
 
-    def test_me(self):
+    def test_file_nodes_remain_but_stories_and_coincidents_vanish(self):
         g = self.g
-        for node_name in g.nodes():
-            node = g.node[node_name]
-            if 'kind' in node:
-                reroute_and_delete(g, node_name)
+        convert_reasons_to_edges(g)
         self.assertEquals(set("abcde"), set(g.nodes()))
+
+    def test_weight_and_reasons_are_coalesced(self):
+        g = self.g
+        convert_reasons_to_edges(g)
+        ab_data = g.get_edge_data('a', 'b')
+        self.assertEquals(2, ab_data['weight'])
+        self.assertIn('DE1212', ab_data['reasons'])
+        self.assertIn('2013-10-29:tim', ab_data['reasons'])
