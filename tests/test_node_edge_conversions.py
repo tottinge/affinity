@@ -1,6 +1,6 @@
-import networkx as nx
-from hg2nx import convert_reasons_to_edges
 import unittest
+import networkx as nx
+from conversion.hg2nx import convert_reasons_to_edges
 
 
 class TestNodeToEdgeConversion(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 import networkx as nx
-from analyze_graph import squelch
+from analysis.analyze_graph import squelch
 
 
 class SquelchTest(unittest.TestCase):

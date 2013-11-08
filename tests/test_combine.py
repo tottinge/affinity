@@ -1,6 +1,6 @@
 import unittest
 import networkx as nx
-from combine_graphs import combine_graphs
+from conversion.combine_graphs import combine_graphs
 
 
 class TestMe(unittest.TestCase):

@@ -23,14 +23,14 @@ for repo in $(cat repositories.config)
 do
     shortname=$(basename ${repo})
     hg log -R ${repo} -r "date(-${DAYS}) and ! merge()" --style=matchable.style  | 
-    python hg2nx.py ${shortname} > ${OUT_DIR}/${shortname}.xml || 
+    python conversion/hg2nx.py ${shortname} > ${OUT_DIR}/${shortname}.xml || 
         echo "Failed for ${repo}"  & 
 done
 wait
 
 echo "Combining the individual graphs"
 COMBINED=${OUT_DIR}/combined.xml
-python combine_graphs.py ${OUT_DIR}/*.xml > ${COMBINED}
+python conversion.combine_graphs.py ${OUT_DIR}/*.xml > ${COMBINED}
 
 
 #echo "Conducting analysis"

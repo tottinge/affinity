@@ -1,7 +1,6 @@
 import sys
 import fileinput
 import networkx as nx
-import helpers
 from itertools import combinations
 
 # The following is the only mercurial-related bit in this file
@@ -40,6 +39,7 @@ def add_relationship(g, identifier, kind, files):
             (identifier, filename)
             for filename in files
         )
+
 
 def reroute_and_delete(g, node_name):
     _annotate_and_route_around(g, node_name)
